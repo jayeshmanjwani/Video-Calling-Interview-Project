@@ -1,33 +1,29 @@
 import express from 'express';
+import path from 'path';
 import {ENV} from './lib/env.js';
+
+import { fileURLToPath } from "url";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname
+(__filename);
 
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.get('/', (req, res) => {
-    res.status(200).json({ msg: "Success from API" });
+    res.status(200).json({msg:"Success from API"});
 });
 
-// Example API route - adapt to your video call app endpoints
-app.get('/api/status', (req, res) => {
-    res.status(200).json({ status: 'ok', uptime: process.uptime() });
-});
+// make our app ready for deployment 
+if(ENV.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// 404 catch-all for unknown routes
-app.use((req, res) => {
-    const id = `bom1::${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    res.status(404).json({
-        error: 'NOT_FOUND',
-        code: 'NOT_FOUND',
-        id,
-        path: req.originalUrl,
-        message: 'Route not found. Verify API endpoint and frontend proxy settings.'
+    app.get("{*any}", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend","dist","index.html"));
     });
-});
-
+}
 app.listen(ENV.PORT, () => {
     console.log(`Server is running on port ${ENV.PORT}`);
 });
