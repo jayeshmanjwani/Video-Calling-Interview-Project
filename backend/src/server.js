@@ -1,29 +1,60 @@
 import express from 'express';
 import path from 'path';
-import {ENV} from './lib/env.js';
-
-import { fileURLToPath } from "url";
-
+import { ENV } from './lib/env.js';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname
-(__filename);
-
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.get('/', (req, res) => {
-    res.status(200).json({msg:"Success from API"});
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// make our app ready for deployment 
-if(ENV.NODE_ENV === 'production') {
+// API routes
+app.get('/', (req, res) => {
+    res.status(200).json({ msg: 'Success from API' });
+});
+
+// Serve frontend in production
+if (ENV.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-    app.get("{*any}", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend","dist","index.html"));
+    // SPA fallback
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+    });
+} else {
+    // Development 404 handler
+    app.use((req, res) => {
+        res.status(404).json({ error: 'Route not found' });
     });
 }
-app.listen(ENV.PORT, () => {
-    console.log(`Server is running on port ${ENV.PORT}`);
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(err.status || 500).json({
+        error: ENV.NODE_ENV === 'production' ? 'Internal server error' : err.message
+    });
+});
+
+// Start server
+const server = app.listen(ENV.PORT, () => {
+    console.log(`🚀 Server running on port ${ENV.PORT} [${ENV.NODE_ENV}]`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+    });
 });
