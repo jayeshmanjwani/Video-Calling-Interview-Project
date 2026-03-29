@@ -5,7 +5,24 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Try .env in backend/ first, then backend/src/ for local dev setups.
+const envPaths = [
+    path.resolve(__dirname, '../../.env'),
+    path.resolve(__dirname, '../.env')
+];
+
+let envResult;
+for (const envPath of envPaths) {
+    envResult = dotenv.config({ path: envPath });
+    if (!envResult.error) {
+        console.log(`✅ Loaded env from ${envPath}`);
+        break;
+    }
+}
+
+if (envResult?.error) {
+    console.warn('⚠️ No .env file found in expected locations; relying on existing environment variables');
+}
 
 const requiredEnvVars = ['PORT', 'DB_URL', 'NODE_ENV'];
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
