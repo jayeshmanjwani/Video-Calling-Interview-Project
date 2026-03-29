@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import { ENV } from './lib/env.js';
 import { fileURLToPath } from 'url';
+import { connect } from 'http2';
+import { connectDB } from './lib/DB.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,9 +48,17 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const server = app.listen(ENV.PORT, () => {
-    console.log(`🚀 Server running on port ${ENV.PORT} [${ENV.NODE_ENV}]`);
-});
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(ENV.PORT, () => {console.log(`🚀 Server running on port ${ENV.PORT} [${ENV.NODE_ENV}]`);
+        });
+    } catch (error) {
+        console.error('💥 Error starting the server:', error);
+        process.exit(1);
+    }
+};
+startServer();
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
