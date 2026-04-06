@@ -3,16 +3,23 @@ import path from 'path';
 import { ENV } from './lib/env.js';
 import { fileURLToPath } from 'url';
 import { connect } from 'http2';
-import { connectDB } from './lib/DB.js';
+import { connectDB } from './lib/db.js';
+import cors from 'cors';
+import {serve} from 'inngest/express';
+import {inngest, functions} from './lib/inngest.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.resolve();
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// credentials:true meaning?? =>server allows a browser to include cookies on request
+app.use(cors({origin:ENV.CLIENT_URL,credentials:true})); // Adjust CORS settings as needed
+
+app.use("/api/inngest", serve({client:inngest, functions})); // Inngest endpoint for handling events
 
 // Health check endpoint
 app.get('/health', (req, res) => {
