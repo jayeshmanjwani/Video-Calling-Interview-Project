@@ -3,7 +3,7 @@ import {connectDB} from './db.js';
 import User from '../models/User.js';
 import {upsertStreamUser,deleteStreamUser} from './stream.js';
 
-export const inngest = new Inngest({name: 'Video Calling Interview App'});
+export const inngest = new Inngest({id: 'video-calling-interview-app'});
 
 const syncUser = inngest.createFunction(
     {id:"sync-user"},
@@ -13,10 +13,18 @@ const syncUser = inngest.createFunction(
 
         const{id,email_addresses,first_name,last_name,image_url} = event.data
 
+        const email = email_addresses?.[0]?.email_address;
+        if (!email) {
+            console.error('No email found for user creation');
+            return;
+        }
+
+        const name = [first_name, last_name].filter(Boolean).join(' ') || '';
+
         const newUser={
             clerkId: id,
-            email: email_addresses[0]?.email_address,
-            name: `${first_name || ""} ${last_name || ""}`,
+            email,
+            name,
             profileImage: image_url 
         }
 

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import {
@@ -9,13 +8,14 @@ import {
   SignOutButton,
   UserButton
 } from "@clerk/clerk-react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() {
+function Landing() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <h1>Welcome to the App</h1>
+      <h1>Welcome to the App - Landing Page</h1>
 
       <SignedOut>
         <SignInButton mode="modal">
@@ -29,6 +29,26 @@ function App() {
 
       <UserButton />
     </>
+  )
+}
+
+function VideoCalls() {
+  return (
+    <div>
+      <h1>Video Calls Page</h1>
+      <p>This is the video calls page.</p>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/video-calls" element={<VideoCalls />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
