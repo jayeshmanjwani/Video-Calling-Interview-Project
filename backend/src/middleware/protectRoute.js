@@ -11,7 +11,7 @@ export const protectRoute = [
 
         const user =await User.findOne({clerkId});
 
-        if(!user) return res.status(404).json({msg: 'User not found'})
+        if(!user) return res.status(404).json({message: 'User not found'})
 
         // Attach user to request
         req.user = user;
