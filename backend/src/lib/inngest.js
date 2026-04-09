@@ -3,7 +3,10 @@ import {connectDB} from './db.js';
 import User from '../models/User.js';
 import {upsertStreamUser,deleteStreamUser} from './stream.js';
 
-export const inngest = new Inngest({name: 'Video Calling Interview App'});
+export const inngest = new Inngest({
+    id: 'video-calling-interview-app',
+    name: 'Video Calling Interview App'
+});
 
 const syncUser = inngest.createFunction(
     {id:"sync-user"},
