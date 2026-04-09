@@ -1,4 +1,4 @@
-import { chatClient } from "../lib/stream";
+import { chatClient } from "../lib/stream.js";
 
 export async function getStreamToken(req, res) {
     try {
@@ -9,7 +9,7 @@ export async function getStreamToken(req, res) {
             token,
             userId: req.user.clerkId,
             userName: req.user.name,
-            userImage: req.user.image
+            userImage: req.user.profileImage
         })
     } catch (error) {
         console.log("Error in getStreamToken controller:", error.message);
