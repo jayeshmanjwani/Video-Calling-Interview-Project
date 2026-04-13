@@ -9,6 +9,7 @@ import { connectDB } from './lib/db.js';
 import {inngest, functions} from './lib/inngest.js';
 import { protectRoute } from './middleware/protectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
+import sessionRoute from './routes/sessionRoute.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.resolve();
@@ -23,6 +24,7 @@ app.use(cors({origin:ENV.CLIENT_URL,credentials:true})); // Adjust CORS settings
 app.use(clerkMiddleware());
 app.use("/api/inngest", serve({client:inngest, functions})); // Inngest endpoint for handling events
 app.use("/api/chat",chatRoutes); // Chat-related routes
+app.use("/api/sessions",sessionRoute); // Session-related routes
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
