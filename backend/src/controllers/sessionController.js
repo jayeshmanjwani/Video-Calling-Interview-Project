@@ -63,7 +63,9 @@ export async function getMyRecentSessions(req, res) {
             status:"Completed", 
             $or:[{host:userId}, {participant:userId}]})
         .sort({createdAt:-1})
-        .limit(20); 
+        .limit(20);
+        
+        res.status(200).json({sessions})
     } catch (error) {
         console.log("Error in getMyRecentSessions controller:", error.message);
         res.status(500).json({message: "Internal server error"});
@@ -144,13 +146,20 @@ export async function endSession(req, res) {
             return res.status(400).json({message: "Session is already completed"})
         }
 
-        // Delete Stream video call
-        const call=streamClient.video.call("default", session.callId);
-        await call.delete({hard:true});
-        
-        // Delete stream chat channel
-        const channel=chatClient.channel("messaging", session.callId);
-        await channel.delete();
+        // Delete Stream video call and chat channel
+        try {
+            const call=streamClient.video.call("default", session.callId);
+            await call.delete({hard:true});
+        } catch (err) {
+            console.log("Failed to delete Stream video call:", err.message);
+        }
+
+        try {
+            const channel=chatClient.channel("messaging", session.callId);
+            await channel.delete();
+        } catch (err) {
+            console.log("Failed to delete Stream chat channel:", err.message);
+        }
         
         session.status="Completed";
         await session.save();
