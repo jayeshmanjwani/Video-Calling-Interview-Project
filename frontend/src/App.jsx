@@ -2,6 +2,7 @@ import {SignedIn,SignedOut,SignInButton,SignOutButton,UserButton, useUser} from 
 import {Navigate, Route, Routes} from 'react-router';
 import HomePage from "./Pages/HomePage";
 import ProblemsPage from "./Pages/ProblemsPage";
+import DashboardPage from "./Pages/DashboardPage";
 
 function App() {
   const {isSignedIn,isLoaded} = useUser();
