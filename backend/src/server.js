@@ -86,9 +86,13 @@ app.get("/", (req, res) => {
 if (ENV.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("/{*any}", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-  });
+  app.get("*", (req, res, next) => {
+  if (req.originalUrl.startsWith("/api")) {
+    return next();
+  }
+
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
 }
 
 const startServer = async () => {
