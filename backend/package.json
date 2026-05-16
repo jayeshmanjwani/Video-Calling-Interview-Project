@@ -1,24 +1,16 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Video Calling Interview Project Backend API",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext js src/server.js",
-    "build": "npm run lint && npm run validate-env",
-    "start": "node src/server.js",
-    "start:prod": "NODE_ENV=production node src/server.js",
-    "lint": "eslint src --max-warnings 0",
-    "lint:fix": "eslint src --fix",
-    "validate-env": "node src/lib/validateEnv.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
-  "engines": {
-    "node": ">=18.0.0"
-  },
+  "description": "",
   "dependencies": {
     "@clerk/express": "^1.7.41",
     "@stream-io/node-sdk": "^0.7.12",
@@ -27,12 +19,10 @@
     "express": "^5.1.0",
     "inngest": "^3.44.3",
     "mongoose": "^8.19.1",
-    "stream-chat": "^9.24.0"
+    "stream-chat": "^9.24.0",
+    "svix": "^1.93.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.1",
     "nodemon": "^3.1.10"
   }
 }
