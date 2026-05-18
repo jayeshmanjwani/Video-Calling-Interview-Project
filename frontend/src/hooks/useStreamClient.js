@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
-import { useClerk } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { initializeStreamClient, disconnectStreamClient } from "../lib/stream";
 import { sessionApi } from "../api/sessions";
 
 function useStreamClient(session, loadingSession, isHost, isParticipant) {
-  const { getToken } = useClerk();
+  const { getToken, isLoaded } = useAuth();
   const [streamClient, setStreamClient] = useState(null);
   const [call, setCall] = useState(null);
   const [chatClient, setChatClient] = useState(null);
@@ -21,6 +21,7 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
       if (!session?.callId) return;
       if (!isHost && !isParticipant) return;
       if (session.status === "completed") return;
+      if (!isLoaded) return;
 
       try {
         const clerkToken = await getToken();

@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useClerk } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 import { sessionApi } from "../api/sessions";
 
 export const useCreateSession = () => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useMutation({
     mutationKey: ["createSession"],
@@ -23,7 +23,7 @@ export const useCreateSession = () => {
 };
 
 export const useActiveSessions = () => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useQuery({
     queryKey: ["activeSessions"],
@@ -37,7 +37,7 @@ export const useActiveSessions = () => {
 };
 
 export const useMyRecentSessions = () => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useQuery({
     queryKey: ["myRecentSessions"],
@@ -51,7 +51,7 @@ export const useMyRecentSessions = () => {
 };
 
 export const useSessionById = (id) => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useQuery({
     queryKey: ["session", id],
@@ -67,7 +67,7 @@ export const useSessionById = (id) => {
 };
 
 export const useJoinSession = () => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useMutation({
     mutationKey: ["joinSession"],
@@ -86,7 +86,7 @@ export const useJoinSession = () => {
 };
 
 export const useEndSession = () => {
-  const { getToken } = useClerk();
+  const { getToken } = useAuth();
 
   const result = useMutation({
     mutationKey: ["endSession"],
