@@ -13,7 +13,10 @@ export const useCreateSession = () => {
       return sessionApi.createSession(data, token);
     },
     onSuccess: () => toast.success("Session created successfully!"),
-    onError: (error) => toast.error(error.response?.data?.message || "Failed to create room"),
+    onError: (error) => {
+      console.error("Create session error:", error);
+      toast.error(error.response?.data?.message || error.message || "Failed to create room");
+    },
   });
 
   return result;
@@ -73,7 +76,10 @@ export const useJoinSession = () => {
       return sessionApi.joinSession(id, token);
     },
     onSuccess: () => toast.success("Joined session successfully!"),
-    onError: (error) => toast.error(error.response?.data?.message || "Failed to join session"),
+    onError: (error) => {
+      console.error("Join session error:", error);
+      toast.error(error.response?.data?.message || error.message || "Failed to join session");
+    },
   });
 
   return result;
@@ -89,7 +95,10 @@ export const useEndSession = () => {
       return sessionApi.endSession(id, token);
     },
     onSuccess: () => toast.success("Session ended successfully!"),
-    onError: (error) => toast.error(error.response?.data?.message || "Failed to end session"),
+    onError: (error) => {
+      console.error("End session error:", error);
+      toast.error(error.response?.data?.message || error.message || "Failed to end session");
+    },
   });
 
   return result;
