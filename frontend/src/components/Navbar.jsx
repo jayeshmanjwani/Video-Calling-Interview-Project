@@ -17,15 +17,18 @@ function Navbar() {
           to="/"
           className="group flex items-center gap-3 hover:scale-105 transition-transform duration-200"
         >
-          <div className="size-10 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent flex items-center justify-center shadow-lg ">
-            <img src="/boomcode-logo.png" className="size-6 text-white" />
+          <div className="size-10 rounded-xl flex items-center justify-center shadow-lg ">
+            <img src="/boomcode-logo.png" className="size-10 text-white" />
           </div>
 
-          <div className="flex flex-col">
-            <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
-              BoomCode
+          <div className="flex flex-col -space-y-3">
+            <span className="font-black text-xl text-white font-mono tracking-wider">
+              Boom
             </span>
-            <span className="text-xs text-base-content/60 font-medium -mt-1">Code Together</span>
+            <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
+              Code
+            </span>
+            
           </div>
         </Link>
 
