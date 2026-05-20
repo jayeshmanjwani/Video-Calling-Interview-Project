@@ -98,7 +98,7 @@ function HomePage() {
             </div>
 
             {/* STATS */}
-            <div className="stats stats-vertical lg:stats-horizontal bg-base-100 shadow-lg">
+            {/* <div className="stats stats-vertical lg:stats-horizontal bg-base-100 shadow-lg">
               <div className="stat">
                 <div className="stat-value text-primary">10K+</div>
                 <div className="stat-title">Active Users</div>
@@ -111,7 +111,7 @@ function HomePage() {
                 <div className="stat-value text-accent">99.9%</div>
                 <div className="stat-title">Uptime</div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* RIGHT IMAGE */}
