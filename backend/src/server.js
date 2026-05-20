@@ -95,6 +95,177 @@ if (ENV.NODE_ENV === "production") {
 });
 }
 
+
+
+// ========================================
+// Code Execution Route
+// ========================================
+
+const LANGUAGE_VERSIONS = {
+  javascript: {
+    language: "javascript",
+    version: "18.15.0",
+  },
+  python: {
+    language: "python",
+    version: "3.10.0",
+  },
+  java: {
+    language: "java",
+    version: "15.0.2",
+  },
+};
+
+// ========================================
+// Execute Code API
+// ========================================
+
+app.post("/api/run", async (req, res) => {
+  try {
+    const { language, code } = req.body;
+
+    if (!language || !code) {
+      return res.status(400).json({
+        success: false,
+        error: "Language and code are required",
+      });
+    }
+
+    // Judge0 Language IDs
+    const languageMap = {
+      javascript: 63, // Node.js
+      python: 71,     // Python 3
+      java: 62,       // Java
+    };
+
+    const language_id = languageMap[language];
+
+    if (!language_id) {
+      return res.status(400).json({
+        success: false,
+        error: "Unsupported language",
+      });
+    }
+
+    // ========================================
+    // Submit Code
+    // ========================================
+
+    const submissionResponse = await fetch(
+  "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      language_id,
+      source_code: code,
+    }),
+  }
+);
+
+    const data = await submissionResponse.json();
+
+console.log(JSON.stringify(data, null, 2));
+
+// ========================================
+// Extract outputs
+// ========================================
+
+// ========================================
+// Debug Response
+// ========================================
+
+console.log(JSON.stringify(data, null, 2));
+
+// ========================================
+// Extract outputs
+// ========================================
+
+const stdout = data.stdout || "";
+const stderr = data.stderr || "";
+const compileOutput = data.compile_output || "";
+const message = data.message || "";
+
+const statusId = data.status?.id;
+const statusDescription = data.status?.description || "";
+
+// ========================================
+// Detect Errors
+// ========================================
+
+// Compilation Error
+if (compileOutput) {
+  return res.json({
+    success: false,
+    error: compileOutput,
+    output: "",
+  });
+}
+
+// Runtime Error
+if (stderr) {
+  return res.json({
+    success: false,
+    error: stderr,
+    output: "",
+  });
+}
+
+// Judge0 internal/system error
+if (message) {
+  return res.json({
+    success: false,
+    error: message,
+    output: "",
+  });
+}
+
+// Non-success status
+if (statusId && statusId !== 3) {
+  return res.json({
+    success: false,
+    error: statusDescription || "Execution failed",
+    output: "",
+  });
+}
+
+// ========================================
+// Success
+// ========================================
+
+return res.json({
+  success: true,
+  output:
+    stdout.trim() !== ""
+      ? stdout
+      : "Program executed successfully with no output",
+});
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// ========================================
+// Helper Function
+// ========================================
+
+function getFileExtension(language) {
+  const extensions = {
+    javascript: "js",
+    python: "py",
+    java: "java",
+  };
+
+  return extensions[language] || "txt";
+}
+
 const startServer = async () => {
   try {
     await connectDB();
