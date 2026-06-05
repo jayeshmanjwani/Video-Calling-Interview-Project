@@ -1,4 +1,5 @@
 import Editor from "@monaco-editor/react";
+
 import { Loader2Icon, PlayIcon } from "lucide-react";
 import { LANGUAGE_CONFIG } from "../data/problems";
 
@@ -9,7 +10,10 @@ function CodeEditorPanel({
   onLanguageChange,
   onCodeChange,
   onRunCode,
+  onSuspiciousPaste,
 }) {
+
+  const previousLengthRef = useRef(code.length);
   return (
     <div className="h-full bg-base-300 flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-base-100 border-t border-base-300">
@@ -48,7 +52,27 @@ function CodeEditorPanel({
           height={"100%"}
           language={LANGUAGE_CONFIG[selectedLanguage].monacoLang}
           value={code}
-          onChange={onCodeChange}
+          onChange={(value = "") => {
+            const previousLength = previousLengthRef.current;
+
+            const diff = value.length - previousLength;
+
+            // Detect suspicious large paste
+            if (diff > 200) {
+              console.log("⚠ Suspicious paste detected");
+
+              if (onSuspiciousPaste) {
+                onSuspiciousPaste({
+                  pastedCharacters: diff,
+                  codeLength: value.length,
+                });
+              }
+            }
+
+            previousLengthRef.current = value.length;
+
+            onCodeChange(value);
+          }}
           theme="vs-dark"
           options={{
             fontSize: 16,

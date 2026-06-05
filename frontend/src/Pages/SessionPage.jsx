@@ -44,8 +44,45 @@ function SessionPage() {
     : null;
 
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
-  const [code, setCode] = useState(problemData?.starterCode?.[selectedLanguage] || "");
+  const [code, setCode] = useState(
+  problemData?.starterCode?.[selectedLanguage] || ""
+);
 
+const [previousCodeLength, setPreviousCodeLength] = useState(0);
+
+
+  useEffect(() => {
+  const handleVisibilityChange = async () => {
+    if (document.hidden) {
+      try {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/ai/tab-switch`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            sessionId: id,
+          }),
+        });
+      } catch (error) {
+        console.error("Tab switch detection failed", error);
+      }
+    }
+  };
+
+  document.addEventListener(
+    "visibilitychange",
+    handleVisibilityChange
+  );
+
+  return () => {
+    document.removeEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
+  };
+}, [id]);
   // auto-join session if user is not already a participant and not the host
   useEffect(() => {
     if (!session || !user || loadingSession) return;
@@ -239,6 +276,26 @@ function SessionPage() {
                       onLanguageChange={handleLanguageChange}
                       onCodeChange={(value) => setCode(value)}
                       onRunCode={handleRunCode}
+                      onSuspiciousPaste={async(data) => {
+                        try {
+                          await fetch(
+                            `${import.meta.env.VITE_API_URL}/api/ai/paste-detection`,
+                            {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              credentials: "include",
+                              body: JSON.stringify({
+                                sessionId: id,
+                                pastedCharacters: data.pastedCharacters,
+                              }),
+                            }
+                          );
+                        } catch (error) {
+                          console.error(error);
+                        }
+                      }}
                     />
                   </Panel>
 
