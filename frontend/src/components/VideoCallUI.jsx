@@ -8,6 +8,7 @@ import { Loader2Icon, MessageSquareIcon, UsersIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Channel, Chat, MessageInput, MessageList, Thread, Window } from "stream-chat-react";
+import { useEffect, useRef } from "react";
 
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "stream-chat-react/dist/css/v2/index.css";
