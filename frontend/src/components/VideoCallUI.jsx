@@ -18,6 +18,46 @@ function VideoCallUI({ chatClient, channel }) {
   const callingState = useCallCallingState();
   const participantCount = useParticipantCount();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [faces, setFaces] = useState(1);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+  const interval = setInterval(async () => {
+    if (!videoRef.current) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+      videoRef.current,
+      0,
+      0
+    );
+
+    const image = canvas.toDataURL("image/jpeg");
+
+    try {
+      const response = await fetch("http://localhost:8000/analyze-gaze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image }),
+      });
+
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, []);
 
   if (callingState === CallingState.JOINING) {
     return (
@@ -33,6 +73,15 @@ function VideoCallUI({ chatClient, channel }) {
   return (
     <div className="h-full flex gap-3 relative str-video">
       <div className="flex-1 flex flex-col gap-3">
+        <div className="bg-warning/20 border border-warning rounded-lg p-3">
+          <h3 className="font-bold mb-2">AI Monitoring</h3>
+
+          <div className="space-y-1 text-sm">
+            <p>⚠ Tab switching monitored</p>
+            <p>⚠ Face monitoring active</p>
+            <p>⚠ Copy-paste detection active</p>
+          </div>
+        </div>
         {/* Participants count badge and Chat Toggle */}
         <div className="flex items-center justify-between gap-2 bg-base-100 p-3 rounded-lg shadow">
           <div className="flex items-center gap-2">
@@ -51,6 +100,20 @@ function VideoCallUI({ chatClient, channel }) {
               Chat
             </button>
           )}
+        </div>
+        
+        <div className="bg-warning/20 border border-warning rounded-lg p-3">
+          <h3 className="font-bold mb-2">AI Monitoring</h3>
+
+          <div className="space-y-1 text-sm">
+            <p>⚠ Tab switching monitored</p>
+
+            {faces > 1 && (
+              <p className="text-error font-semibold">
+                ⚠ Multiple faces detected
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 bg-base-300 rounded-lg overflow-hidden relative">

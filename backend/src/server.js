@@ -12,6 +12,7 @@ import User from "./models/User.js";
 
 import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoute.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(clerkMiddleware()); // this adds auth field to request object: req.auth(
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Clerk webhook to sync users with database
 app.post("/api/webhooks/clerk", express.raw({ type: "application/json" }), async (req, res) => {

@@ -31,6 +31,31 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    warnings: [
+      {
+        type: String,
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+
+    tabSwitchCount: {
+      type: Number,
+      default: 0,
+    },
+
+    suspiciousPasteCount: {
+      type: Number,
+      default: 0,
+    },
+
+    attentionScore: {
+      type: Number,
+      default: 100,
+    },
   },
   { timestamps: true }
 );

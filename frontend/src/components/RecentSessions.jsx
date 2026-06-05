@@ -59,6 +59,7 @@ function RecentSessions({ sessions, isLoading }) {
                   </div>
 
                   <div className="space-y-2 text-sm opacity-80 mb-4">
+                    {/* Session Time */}
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
                       <span>
@@ -67,11 +68,57 @@ function RecentSessions({ sessions, isLoading }) {
                         })}
                       </span>
                     </div>
+
+                    {/* Participants */}
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4" />
                       <span>
                         {session.participant ? "2" : "1"} participant
                         {session.participant ? "s" : ""}
+                      </span>
+                    </div>
+
+                    {/* AI Attention Score */}
+                    <div className="flex items-center gap-2">
+                      <span>🧠</span>
+                      <span>
+                        Attention Score:
+                        <span className="font-semibold ml-1">
+                          {session.attentionScore || 100}%
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Warning Count */}
+                    <div className="flex items-center gap-2">
+                      <span>⚠</span>
+                      <span>
+                        Warnings:
+                        <span className="font-semibold ml-1">
+                          {session.warnings?.length || 0}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Tab Switch Count */}
+                    <div className="flex items-center gap-2">
+                      <span>🪟</span>
+                      <span>
+                        Tab Switches:
+                        <span className="font-semibold ml-1">
+                          {session.tabSwitchCount || 0}
+                        </span>
+                      </span>
+                    </div>
+
+                    {/* Suspicious Paste Count */}
+                    <div className="flex items-center gap-2">
+                      <span>📋</span>
+                      <span>
+                        Suspicious Pastes:
+                        <span className="font-semibold ml-1">
+                          {session.suspiciousPasteCount || 0}
+                        </span>
                       </span>
                     </div>
                   </div>
